@@ -1,13 +1,15 @@
 import netscape.javascript.JSObject;
 
+
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.io.*;
 import java.util.Arrays;
 
-import static java.lang.Math.cos;
-import static jdk.internal.joptsimple.internal.Reflection.invoke;
+import static java.lang.invoke.ConstantBootstraps.invoke;
+
 
 public class HttpServer {
     public static void main(String[] args) throws IOException {
@@ -93,10 +95,12 @@ public class HttpServer {
             String[] parts = command.split("\\(");
             String[] args = (parts[1].split(","));
             String param = args[1].split("\\)")[0];
+            param = param.trim();
             try{
                 Class<?> c = Class.forName(args[0]);
                 Method method = c.getMethod(param);
-                return String.valueOf(invoke(java.lang.Math.class,cos(7)));
+
+                return String.valueOf(method.invoke(null));
             }catch(ClassNotFoundException e) {
                 return e.getMessage();
             } catch (NoSuchMethodException e) {
@@ -107,9 +111,16 @@ public class HttpServer {
                 throw new RuntimeException(e);
             }
         }
-        else{
-        return "";
+        else if(command.contains("unaryInvoke")){
+            command = command.replace("\\)", "");
+            String[] parts = command.split("\\(");
+            String[] args = (parts[1].split(","));
+
+            return "";
+        }else if(command.contains("binaryInvoke")){
+            return "";
         }
+        return "";
     }
 
 
