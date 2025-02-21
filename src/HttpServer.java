@@ -78,7 +78,7 @@ public class HttpServer {
         }
     }
 
-    public static String calcular(String command)  {
+    public static String calcular(String command) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if(command.contains("Class")){
             String[] parts = command.split("\\(");
             String methodName = parts[1];
@@ -115,8 +115,14 @@ public class HttpServer {
             command = command.replace("\\)", "");
             String[] parts = command.split("\\(");
             String[] args = (parts[1].split(","));
+            System.out.println(args[0]);
+            Class<?> c = Class.forName(args[0]);
+            String m = args[1];
+            Method method = c.getMethod(m);
+            String t = args[2];
+            String v = args[3];
 
-            return "";
+            return String.valueOf(method.invoke(t,v));
         }else if(command.contains("binaryInvoke")){
             return "";
         }
